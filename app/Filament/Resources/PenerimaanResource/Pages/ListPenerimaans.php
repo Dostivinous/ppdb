@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PenerimaanResource\Pages;
 use App\Filament\Resources\PenerimaanResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Components\Tab;
 
 class ListPenerimaans extends ListRecords
 {
@@ -14,6 +15,15 @@ class ListPenerimaans extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    public function getTabs(): array
+    {
+        return [
+            null => Tab::make('All'),
+            'Lunas' => Tab::make()->query(fn ($query) => $query->where('pembayaran', 'Lunas')),
+            'Cicil' => Tab::make()->query(fn ($query) => $query->where('pembayaran', 'Cicil')),
         ];
     }
 }

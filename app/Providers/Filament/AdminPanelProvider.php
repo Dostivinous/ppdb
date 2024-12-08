@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Login;
 use App\Filament\Widgets\PendaftaranList;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,14 +31,14 @@ use Filament\Navigation\NavigationItem;
 
 class AdminPanelProvider extends PanelProvider
 {
-    
+
     public function panel(Panel $panel): Panel
     {
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
             ->colors([
                 'primary' => Color::Teal,
             ])
@@ -86,7 +87,7 @@ class AdminPanelProvider extends PanelProvider
                     ->abbreviateCount(false)
                     ->alphabetical()
                 ])
-            ->favicon(asset('images/metik.png'));
-                // ->databaseNotifications();
+            ->favicon(asset('images/metik.png'))
+            ->databaseNotifications();
     }
 }

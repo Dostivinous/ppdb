@@ -46,7 +46,7 @@ class PenerimaanResource extends Resource
 {
     return $form->schema([
         Wizard::make([
-            
+
             Wizard\Step::make('Pendaftaran')
                 ->schema([
                     Select::make('pendaftaran_id')
@@ -76,7 +76,7 @@ class PenerimaanResource extends Resource
                             }
                         })
                         ->required(),
-                    
+
                     TextInput::make('nama_peserta_didik')
                         ->label('Nama Peserta Didik')
                         ->disabled()
@@ -237,38 +237,38 @@ class PenerimaanResource extends Resource
     }
 
     public static function infolist(Infolist $infolist): Infolist
-{
-    return $infolist
-        ->schema([
-            Tabs::make('Tabs')
-        ->tabs([
-            Tabs\Tab::make('Pendaftaran')
-                ->schema([
-                    TextEntry::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik'),
-                    TextEntry::make('pendaftaran.nama_ayah')->label('Nama Ayah'),
-                    TextEntry::make('pendaftaran.nama_ibu')->label('Nama Ibu'),
-                    TextEntry::make('pendaftaran.nomor_telp_peserta')->label('No.Telp Calon Peserta Didik'),
-                    TextEntry::make('pendaftaran.nomor_telp_ayah')->label('No.Telp Ayah'),
-                    TextEntry::make('pendaftaran.nomor_telp_ibu')->label('No.Telp Ibu'),
-                    TextEntry::make('pendaftaran.asal_sekolah')->label('Asal Sekolah'),
-                    TextEntry::make('pendaftaran.alamat_rumah')->label('Alamat Rumah'),
-                    TextEntry::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
-                ]),
-            Tabs\Tab::make('Kelengkapan')
-                ->schema([
-                    TextEntry::make('dokumen')->label('Dokumen'),
-                    TextEntry::make('ukuran_baju')->label('Ukuran Baju'),
-                    TextEntry::make('pembayaran')->label('Pembayaran'),
-                ]),
-            Tabs\Tab::make('Form')
-                ->schema([
-                    TextEntry::make('pendaftaran.nomor_form')->label('Nomor Form'),
-                    TextEntry::make('nomor_penerimaan')->label('Nomor Penerimaan'),
-                    TextEntry::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
-                ]),
-            ])
-        ]);
-}
+    {
+        return $infolist
+            ->schema([
+                Tabs::make('Tabs')
+            ->tabs([
+                Tabs\Tab::make('Pendaftaran')
+                    ->schema([
+                        TextEntry::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik'),
+                        TextEntry::make('pendaftaran.nama_ayah')->label('Nama Ayah'),
+                        TextEntry::make('pendaftaran.nama_ibu')->label('Nama Ibu'),
+                        TextEntry::make('pendaftaran.nomor_telp_peserta')->label('No.Telp Calon Peserta Didik'),
+                        TextEntry::make('pendaftaran.nomor_telp_ayah')->label('No.Telp Ayah'),
+                        TextEntry::make('pendaftaran.nomor_telp_ibu')->label('No.Telp Ibu'),
+                        TextEntry::make('pendaftaran.asal_sekolah')->label('Asal Sekolah'),
+                        TextEntry::make('pendaftaran.alamat_rumah')->label('Alamat Rumah'),
+                        TextEntry::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
+                    ]),
+                Tabs\Tab::make('Kelengkapan')
+                    ->schema([
+                        TextEntry::make('dokumen')->label('Dokumen'),
+                        TextEntry::make('ukuran_baju')->label('Ukuran Baju'),
+                        TextEntry::make('pembayaran')->label('Pembayaran'),
+                    ]),
+                Tabs\Tab::make('Form')
+                    ->schema([
+                        TextEntry::make('pendaftaran.nomor_form')->label('Nomor Form'),
+                        TextEntry::make('nomor_penerimaan')->label('Nomor Penerimaan'),
+                        TextEntry::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
+                    ]),
+                ])
+            ]);
+    }
 
 
 }
