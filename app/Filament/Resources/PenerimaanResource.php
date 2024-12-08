@@ -14,6 +14,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
@@ -22,13 +23,22 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Tabs;
 
 class PenerimaanResource extends Resource
 {
     protected static ?string $model = Penerimaan::class;
     protected static ?string $navigationIcon = 'heroicon-o-envelope-open';
-    protected static ?string $navigationGroup = 'Form';
+    protected static ?string $navigationGroup = 'Form PPDB';
     protected static ?string $pluralLabel = 'Penerimaan';
+    protected static ?string $recordTitleAttribute = 'pendaftaran.nomor_form';
+    protected static ?string $singularLabel = 'Penerimaan';
+
+    public static function getNavigationBadge(): ?String
+    {
+        return Penerimaan::count();
+    }
 
     public static function form(Form $form): Form
 {
@@ -40,14 +50,14 @@ class PenerimaanResource extends Resource
                     Select::make('pendaftaran_id')
                         ->label('Pendaftaran')
                         ->options(
-                            Pendaftaran::whereDoesntHave('penerimaan') // Tampilkan hanya data yang belum divalidasi
+                            Pendaftaran::whereDoesntHave('penerimaan', ) // Tampilkan hanya data yang belum divalidasi
                                 ->pluck('nomor_form', 'id')
                         )
                         ->searchable()
-                        ->reactive() // Untuk memuat data terkait secara dinamis
+                        ->reactive()
+                        ->default(fn ($get) => $get('record.pendaftaran_id')) // Memastikan data yang sudah ada terisi saat edit
                         ->afterStateUpdated(function (callable $set, $state) {
                             if ($state) {
-                                // Muat data dari pendaftaran berdasarkan ID
                                 $pendaftaran = Pendaftaran::find($state);
 
                                 if ($pendaftaran) {
@@ -64,74 +74,73 @@ class PenerimaanResource extends Resource
                             }
                         })
                         ->required(),
-
+                    
                     TextInput::make('nama_peserta_didik')
                         ->label('Nama Peserta Didik')
                         ->disabled()
-                        ->required(),
+                        ->default(fn ($get) => $get('record.nama_peserta_didik')),
 
                     TextInput::make('nama_ayah')
                         ->label('Nama Ayah')
                         ->disabled()
-                        ->required(),
+                        ->default(fn ($get) => $get('record.nama_ayah')),
 
                     TextInput::make('nama_ibu')
                         ->label('Nama Ibu')
                         ->disabled()
-                        ->required(),
+                        ->default(fn ($get) => $get('record.nama_ibu')),
 
                     TextInput::make('nomor_telp_peserta')
                         ->label('Nomor Telepon Peserta')
                         ->disabled()
-                        ->required(),
+                        ->default(fn ($get) => $get('record.nomor_telp_peserta')),
 
                     TextInput::make('nomor_telp_ayah')
                         ->label('Nomor Telepon Ayah')
                         ->disabled()
-                        ->required(),
+                        ->default(fn ($get) => $get('record.nomor_telp_ayah')),
 
                     TextInput::make('nomor_telp_ibu')
                         ->label('Nomor Telepon Ibu')
                         ->disabled()
-                        ->required(),
+                        ->default(fn ($get) => $get('record.nomor_telp_ibu')),
 
                     TextInput::make('asal_sekolah')
                         ->label('Asal Sekolah')
                         ->disabled()
-                        ->required(),
+                        ->default(fn ($get) => $get('record.asal_sekolah')),
 
                     TextInput::make('alamat_rumah')
                         ->label('Alamat Rumah')
                         ->disabled()
-                        ->required(),
+                        ->default(fn ($get) => $get('record.alamat_rumah')),
 
                     TextInput::make('tanggal_pendaftaran')
                         ->label('Tanggal Pendaftaran')
                         ->disabled()
-                        ->required(),
+                        ->default(fn ($get) => $get('record.tanggal_pendaftaran')),
                 ]),
 
             Wizard\Step::make('Dokumen')
                 ->schema([
                     CheckboxList::make('dokumen')
-                ->label('Pilih Dokumen yang Dibawa')
-                ->options([
-                    'Tidak Membawa Dokumen' => 'Tidak Membawa Dokumen',
-                    'KK' => 'KK',
-                    'Akte' => 'Akte',
-                    'Ijazah' => 'Ijazah',
-                    'Pas Foto' => 'Pas Foto',
-                ])
-                ->reactive()
-                ->afterStateUpdated(function (callable $set, $state) {
-                    if (in_array('Tidak Membawa Dokumen', $state ?? [])) {
-                        $set('dokumen', 'Tidak Membawa Dokumen');
-                    }
-                    $set('dokumen', json_encode($state)); // Convert array to JSON
-                })
-                ->required()
-                ->helperText('Centang "Tidak Membawa Dokumen" jika tidak ada dokumen yang dibawa.')
-                ->label('')
+                        ->label('Dokumen')
+                        ->options([
+                            'KK' => 'KK',
+                            'Akte' => 'Akte',
+                            'Ijazah' => 'Ijazah',
+                            'Pas Foto' => 'Pas Foto',
+                            'Tidak Membawa Dokumen' => 'Tidak Membawa Dokumen',
+                        ])
+                        ->helperText('Pilih dokumen yang dibawa.')
+                        ->required()
+                        ->reactive()
+                        ->default(fn ($get) => json_decode($get('record.dokumen'), true)) // Default nilai dokumen berdasarkan data yang ada
+                        ->afterStateUpdated(function (callable $set, $state) {
+                            if (in_array('Tidak Membawa Dokumen', $state)) {
+                                $set('dokumen', ['Tidak Membawa Dokumen']);
+                            }
+                        }),
                 ]),
 
             Wizard\Step::make('Kelengkapan')
@@ -146,31 +155,26 @@ class PenerimaanResource extends Resource
                             '2XL' => '2XL',
                             '3XL' => '3XL',
                         ])
-                        ->required(),
+                        ->required()
+                        ->default(fn ($get) => $get('record.ukuran_baju')),
 
                     Select::make('pembayaran')
                         ->label('Pembayaran')
                         ->options([
                             'Lunas' => 'Lunas',
-                            'Tidak Lunas' => 'Tidak Lunas',
+                            'Cicil' => 'Cicil',
                         ])
-                        ->required(),
-
-                    // TextInput::make('nomor_penerimaan')
-                    //     ->label('Nomor Penerimaan')
-                    //     ->required()
-                    //     ->unique(),
+                        ->required()
+                        ->default(fn ($get) => $get('record.pembayaran')),
 
                     Toggle::make('is_validated')
-                        ->label('Validasi'),
+                        ->label('Validasi')
+                        ->default(fn ($get) => $get('record.is_validated'))
+                        ->required(),
                 ]),
         ]),
     ]);
 }
-
-
-
-
 
     public static function table(Table $table): Table
     {
@@ -215,4 +219,49 @@ class PenerimaanResource extends Resource
             'edit' => Pages\EditPenerimaan::route('/{record}/edit'),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (isset($data['dokumen']) && is_array($data['dokumen'])) {
+            $data['dokumen'] = json_encode($data['dokumen']); // Konversi array menjadi JSON sebelum simpan
+        }
+
+        return $data;
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+{
+    return $infolist
+        ->schema([
+            Tabs::make('Tabs')
+        ->tabs([
+            Tabs\Tab::make('Pendaftaran')
+                ->schema([
+                    TextEntry::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik'),
+                    TextEntry::make('pendaftaran.nama_ayah')->label('Nama Ayah'),
+                    TextEntry::make('pendaftaran.nama_ibu')->label('Nama Ibu'),
+                    TextEntry::make('pendaftaran.nomor_telp_peserta')->label('No.Telp Calon Peserta Didik'),
+                    TextEntry::make('pendaftaran.nomor_telp_ayah')->label('No.Telp Ayah'),
+                    TextEntry::make('pendaftaran.nomor_telp_ibu')->label('No.Telp Ibu'),
+                    TextEntry::make('pendaftaran.asal_sekolah')->label('Asal Sekolah'),
+                    TextEntry::make('pendaftaran.alamat_rumah')->label('Alamat Rumah'),
+                    TextEntry::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
+                ]),
+            Tabs\Tab::make('Kelengkapan')
+                ->schema([
+                    TextEntry::make('dokumen')->label('Dokumen'),
+                    TextEntry::make('ukuran_baju')->label('Ukuran Baju'),
+                    TextEntry::make('pembayaran')->label('Pembayaran'),
+                ]),
+            Tabs\Tab::make('Form')
+                ->schema([
+                    TextEntry::make('pendaftaran.nomor_form')->label('Nomor Form'),
+                    TextEntry::make('nomor_penerimaan')->label('Nomor Penerimaan'),
+                    TextEntry::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
+                ]),
+            ])
+        ]);
+}
+
+
 }

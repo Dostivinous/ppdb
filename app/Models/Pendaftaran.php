@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 
 class Pendaftaran extends Model
 {
@@ -42,4 +43,5 @@ class Pendaftaran extends Model
     {
         return $this->hasOne(Penerimaan::class);
     }
+
 }

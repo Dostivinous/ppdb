@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('pendaftaran_id')->constrained('pendaftarans')->onDelete('cascade');
             $table->json('dokumen');
             $table->enum('ukuran_baju', ['S', 'M', 'L', 'XL', '2XL', '3XL']);
-            $table->enum('pembayaran', ['Lunas', 'Tidak Lunas']);
+            $table->enum('pembayaran', ['Lunas', 'Cicil']);
             $table->string('nomor_penerimaan')->unique();
             $table->boolean('is_validated')->default(false);
             $table->timestamps();

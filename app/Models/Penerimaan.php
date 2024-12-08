@@ -19,6 +19,19 @@ class Penerimaan extends Model
         'is_validated'
     ];
 
+    protected $casts = [
+        'dokumen' => 'array', // Otomatis mengonversi ke array saat diakses
+    ];
+
+    public function setDokumenAttribute($value)
+    {
+        if (is_array($value)) {
+            $this->attributes['dokumen'] = json_encode($value); // Pastikan JSON dihasilkan hanya sekali
+        } else {
+            $this->attributes['dokumen'] = $value;
+        }
+    }
+
     protected static function boot()
     {
         parent::boot();

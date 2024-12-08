@@ -17,6 +17,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\Wizard;
 use Filament\Tables\Columns\BooleanColumn;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\Tabs;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -24,17 +27,19 @@ class PendaftaranResource extends Resource
 {
     protected static ?string $model = Pendaftaran::class;
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
-    protected static ?string $navigationGroup = 'Form';
+    protected static ?string $navigationGroup = 'Form PPDB';
     protected static ?string $pluralLabel = 'Pendaftaran';
     protected static ?string $recordTitleAttribute = 'nama_peserta_didik';
+
+    public static function getNavigationBadge(): ?String
+    {
+        return Pendaftaran::count();
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                // TextInput::make('nomor_form')
-                // ->label('Nomor Form')->disabled()->default('PPDB202400'),
-
                 Wizard::make([
                     Wizard\Step::make('Peserta Didik')
                         ->schema([
@@ -86,8 +91,8 @@ class PendaftaranResource extends Resource
                 TextColumn::make('asal_sekolah')->label('Asal Sekolah'),
                 TextColumn::make('alamat_rumah')->label('Alamat Rumah')->wrap(),
                 TextColumn::make('tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
-                // BooleanColumn::make('is_validated')->label('Status Validasi')
-                // ->boolean(),
+                BooleanColumn::make('is_validated')->label('Status Validasi')
+                ->boolean()->alignCenter(),
             ])
             ->defaultSort('nomor_form', 'asc')
             ->filters([
@@ -140,6 +145,33 @@ class PendaftaranResource extends Resource
         return parent::getEloquentQuery()->where('is_validated', false);
     }
 
-
+    public static function infolist(Infolist $infolist): Infolist
+{
+    return $infolist
+        ->schema([
+            Tabs::make('Tabs')
+        ->tabs([
+            Tabs\Tab::make('Data Siswa')
+                ->schema([
+                    TextEntry::make('nama_peserta_didik')->label('Nama Peserta Didik'),
+                    TextEntry::make('nomor_telp_peserta')->label('No.Telp Peserta'),
+                    TextEntry::make('asal_sekolah')->label('Asal Sekolah'),
+                    TextEntry::make('alamat_rumah')->label('Alamat Rumah'),
+                ]),
+            Tabs\Tab::make('Data Orang Tua')
+                ->schema([
+                    TextEntry::make('nama_ayah')->label('Nama Ayah'),
+                    TextEntry::make('nama_ibu')->label('Nama Ibu'),
+                    TextEntry::make('nomor_telp_ayah')->label('No.Telp Ayah'),
+                    TextEntry::make('nomor_telp_ibu')->label('No. Telp Ibu'),
+                ]),
+            Tabs\Tab::make('Form')
+                ->schema([
+                    TextEntry::make('nomor_form')->label('Nomor Form'),
+                    TextEntry::make('tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
+                ]),
+            ])
+        ]);
+}
 
 }

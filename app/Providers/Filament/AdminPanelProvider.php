@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\PendaftaranList;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -17,6 +18,14 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Awcodes\Overlook\OverlookPlugin;
+use App\Models\Pendaftaran;
+use App\Models\Penerimaan;
+use Awcodes\Overlook\Widgets\OverlookWidget;
+use App\Filament\Resources\Widgets\AdvancedStatsOverviewWidget;
+use App\Filament\Widgets\AdvancedStatsOverviewWidget as WidgetsAdvancedStatsOverviewWidget;
+use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget as BaseWidget;
+use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget\Stat;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -29,19 +38,22 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Lime,
+                'primary' => Color::Teal,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                // Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\AccountWidget::class,
+                // Widgets\FilamentInfoWidget::class,
+                OverlookWidget::class,
+                WidgetsAdvancedStatsOverviewWidget::class,
+                PendaftaranList::class,
             ])
-            ->middleware([
+            ->middleware(middleware:[
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
@@ -54,6 +66,18 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->plugins([
+                OverlookPlugin::make()
+                    ->sort(2)
+                    ->columns([
+                        'lg' => 4,
+                    ])
+                    ->abbreviateCount(false)
+                    ->alphabetical()
+                ])
+            ->favicon(asset('images/metik.png'));
+                // ->databaseNotifications();
     }
 }
