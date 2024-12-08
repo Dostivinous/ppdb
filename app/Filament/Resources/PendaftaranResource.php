@@ -49,7 +49,7 @@ class PendaftaranResource extends Resource
                             TextInput::make('nomor_telp_peserta')
                             ->required()->label('No.Telp Peserta')->placeholder('No.Telp Peserta'),
                         ]),
-                        
+
                     Wizard\Step::make('Data Orang Tua')
                         ->schema([
                             TextInput::make('nama_ayah')
@@ -69,15 +69,15 @@ class PendaftaranResource extends Resource
                         ->schema([
                             TextInput::make('asal_sekolah')
                             ->required()->label('Asal Sekolah')->placeholder('Asal Sekolah'),
-                            
+
                             TextInput::make('alamat_rumah')
                             ->required()->label('Alamat Rumah')->placeholder('Alamat Rumah'),
 
                             DatePicker::make('tanggal_pendaftaran')
-                            ->required()->label('Tanggal Pendaftaran')->placeholder('Tanggal Pendaftaran')->default(now()),
+                            ->required()->label('Tanggal Pendaftaran')->placeholder('Tanggal Pendaftaran')->default(now())->maxDate(now()),
                         ]),
                 ])
-                
+
             ]);
     }
 
