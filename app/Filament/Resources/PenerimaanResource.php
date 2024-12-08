@@ -23,8 +23,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\Action;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Tabs;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PenerimaanResource extends Resource
 {
@@ -199,6 +201,11 @@ class PenerimaanResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
+                    Action::make('export')
+                        ->label('Export to Excel')
+                        ->action(function () {
+                            Excel::download(new Penerimaan, 'data.xlsx');
+                }),
                 ]),
             ])
             ->bulkActions([

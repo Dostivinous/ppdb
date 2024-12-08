@@ -26,6 +26,7 @@ use App\Filament\Resources\Widgets\AdvancedStatsOverviewWidget;
 use App\Filament\Widgets\AdvancedStatsOverviewWidget as WidgetsAdvancedStatsOverviewWidget;
 use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget as BaseWidget;
 use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget\Stat;
+use Filament\Navigation\NavigationItem;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -44,6 +45,14 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 // Pages\Dashboard::class,
+            ])
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationItems([
+                NavigationItem::make('SMK Media Informatika')
+                ->url('https://smkmediainformatika.sch.id/')
+                ->icon('heroicon-o-academic-cap')
+                ->group('External')
+                ->sort(2),
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
