@@ -29,10 +29,15 @@ use Filament\Infolists\Components\Tabs;
 class PenerimaanResource extends Resource
 {
     protected static ?string $model = Penerimaan::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-envelope-open';
+
     protected static ?string $navigationGroup = 'Form PPDB';
+
     protected static ?string $pluralLabel = 'Penerimaan';
+
     protected static ?string $recordTitleAttribute = 'pendaftaran.nomor_form';
+
     protected static ?string $singularLabel = 'Penerimaan';
 
     public static function getNavigationBadge(): ?String
@@ -181,9 +186,11 @@ class PenerimaanResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('pendaftaran.nomor_form')->label('Nomor Form')->sortable(),
+                TextColumn::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik')->toggleable(),
                 TextColumn::make('nomor_penerimaan')->label('Nomor Penerimaan'),
                 TextColumn::make('dokumen')->label('Dokumen'),
                 TextColumn::make('pembayaran')->label('Pembayaran'),
+                TextColumn::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran')->Toggleable(),
                 BooleanColumn::make('is_validated')->label('Tervalidasi'),
             ])
             ->filters([

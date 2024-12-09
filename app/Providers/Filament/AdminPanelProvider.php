@@ -79,6 +79,10 @@ class AdminPanelProvider extends PanelProvider
                     ->alphabetical()
                 ])
             ->favicon(asset('images/metik.png'))
-            ->databaseNotifications();
+            ->databaseNotifications()
+            ->navigationGroups([
+                'Form PPDB',
+                'Manajemen Data',
+            ]);
     }
 }
