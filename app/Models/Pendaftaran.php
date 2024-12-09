@@ -25,7 +25,7 @@ class Pendaftaran extends Model
         'asal_sekolah',
         'alamat_rumah',
         'tanggal_pendaftaran',
-        'is_validated', 
+        'is_validated',
     ];
 
     public static function boot()

@@ -49,7 +49,7 @@ class Penerimaan extends Model
             $model->nomor_penerimaan = 'NP00' . $lastNumber;
         });
     }
-    
+
 
     public function pendaftaran()
     {

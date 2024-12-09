@@ -26,9 +26,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class PendaftaranResource extends Resource
 {
     protected static ?string $model = Pendaftaran::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
+
     protected static ?string $navigationGroup = 'Form PPDB';
+
     protected static ?string $pluralLabel = 'Pendaftaran';
+
     protected static ?string $recordTitleAttribute = 'nama_peserta_didik';
 
     public static function getNavigationBadge(): ?String
@@ -44,34 +48,34 @@ class PendaftaranResource extends Resource
                     Wizard\Step::make('Peserta Didik')
                         ->schema([
                             TextInput::make('nama_peserta_didik')
-                            ->required()->label('Nama Calon Peserta Didik')->placeholder('Nama Calon Peserta Didik'),
+                            ->required()->label('Nama Calon Peserta Didik')->placeholder('Nama Calon Peserta Didik')->maxLength(40),
 
                             TextInput::make('nomor_telp_peserta')
-                            ->required()->label('No.Telp Peserta')->placeholder('No.Telp Peserta'),
+                            ->required()->label('No.Telp Peserta')->placeholder('No.Telp Peserta')->numeric()->prefix('+62')->minValue(10),
                         ]),
 
                     Wizard\Step::make('Data Orang Tua')
                         ->schema([
                             TextInput::make('nama_ayah')
-                            ->required()->label('Nama Ayah')->placeholder('Nama Ayah'),
+                            ->required()->label('Nama Ayah')->placeholder('Nama Ayah')->maxLength(30),
 
                             TextInput::make('nama_ibu')
-                            ->required()->label('Nama Ibu')->placeholder('Nama Ibu'),
+                            ->required()->label('Nama Ibu')->placeholder('Nama Ibu')->maxLength(30),
 
                              TextInput::make('nomor_telp_ayah')
-                            ->required()->label('No.Telp Ayah')->placeholder('No.Telp Ayah'),
+                            ->required()->label('No.Telp Ayah')->placeholder('No.Telp Ayah')->numeric()->prefix('+62')->minValue(10),
 
                             TextInput::make('nomor_telp_ibu')
-                            ->required()->label('No.Telp Ibu')->placeholder('No.Telp Ibu'),
+                            ->required()->label('No.Telp Ibu')->placeholder('No.Telp Ibu')->numeric()->prefix('+62')->minValue(10),
                         ]),
 
                     Wizard\Step::make('Kelengkapan')
                         ->schema([
                             TextInput::make('asal_sekolah')
-                            ->required()->label('Asal Sekolah')->placeholder('Asal Sekolah'),
+                            ->required()->label('Asal Sekolah')->placeholder('Asal Sekolah')->maxLength(20),
 
                             TextInput::make('alamat_rumah')
-                            ->required()->label('Alamat Rumah')->placeholder('Alamat Rumah'),
+                            ->required()->label('Alamat Rumah')->placeholder('Alamat Rumah')->maxLength(255),
 
                             DatePicker::make('tanggal_pendaftaran')
                             ->required()->label('Tanggal Pendaftaran')->placeholder('Tanggal Pendaftaran')->default(now())->maxDate(now()),

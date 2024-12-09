@@ -97,6 +97,10 @@ class AdminPanelProvider extends PanelProvider
             //     \Hasnayeen\Themes\ThemesPlugin::make()
             // )
             ->favicon(asset('images/metik.png'))
-            ->databaseNotifications();
+            ->databaseNotifications()
+            ->navigationGroups([
+                'Form PPDB',
+                'Manajemen Data',
+            ]);
     }
 }

@@ -33,10 +33,15 @@ use Illuminate\Database\Eloquent\Model;
 class PenerimaanResource extends Resource
 {
     protected static ?string $model = Penerimaan::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-envelope-open';
+
     protected static ?string $navigationGroup = 'Form PPDB';
+
     protected static ?string $pluralLabel = 'Penerimaan';
+
     protected static ?string $recordTitleAttribute = 'pendaftaran.nomor_form';
+
     protected static ?string $singularLabel = 'Penerimaan';
 
     public static function getNavigationBadge(): ?String
@@ -185,6 +190,7 @@ class PenerimaanResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('pendaftaran.nomor_form')->label('Nomor Form')->sortable(),
+<<<<<<< HEAD
                 TextColumn::make('nomor_penerimaan')->label('Nomor Penerimaan')->sortable(),
                 TextColumn::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('pendaftaran.asal_sekolah')->label('Asal Sekolah')->toggleable(isToggledHiddenByDefault: true)->sortable(),
@@ -192,6 +198,14 @@ class PenerimaanResource extends Resource
                 TextColumn::make('pembayaran')->label('Pembayaran')->sortable(),
                 TextColumn::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 BooleanColumn::make('is_validated')->label('Tervalidasi')->sortable(),
+=======
+                TextColumn::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik')->toggleable(),
+                TextColumn::make('nomor_penerimaan')->label('Nomor Penerimaan'),
+                TextColumn::make('dokumen')->label('Dokumen'),
+                TextColumn::make('pembayaran')->label('Pembayaran'),
+                TextColumn::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran')->Toggleable(),
+                BooleanColumn::make('is_validated')->label('Tervalidasi'),
+>>>>>>> ef1cd4c4bac4d42c7fc20fc7b84cb3a7ce2a49d4
             ])
             ->filters([
                 Filter::make('Belum Divalidasi')
