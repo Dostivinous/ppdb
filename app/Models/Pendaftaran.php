@@ -17,6 +17,8 @@ class Pendaftaran extends Model
     protected $fillable = [
         'nomor_form',
         'nama_peserta_didik',
+        'jurusan',
+        'jenis_kelamin',
         'nama_ayah',
         'nama_ibu',
         'nomor_telp_peserta',
@@ -26,6 +28,13 @@ class Pendaftaran extends Model
         'alamat_rumah',
         'tanggal_pendaftaran',
         'is_validated',
+    ];
+
+    public const KUOTA = [
+        'PPLG' => 2,
+        'TJKT' => 108,
+        'DKV'  => 108,
+        'BCP'  => 108,
     ];
 
     public static function boot()

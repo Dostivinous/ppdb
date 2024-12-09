@@ -71,6 +71,8 @@ class PenerimaanResource extends Resource
 
                                     if ($pendaftaran) {
                                         $set('nama_peserta_didik', $pendaftaran->nama_peserta_didik);
+                                        $set('jurusan', $pendaftaran->jurusan);
+                                        $set('jenis_kelamin', $pendaftaran->jenis_kelamin);
                                         $set('nama_ayah', $pendaftaran->nama_ayah);
                                         $set('nama_ibu', $pendaftaran->nama_ibu);
                                         $set('nomor_telp_peserta', $pendaftaran->nomor_telp_peserta);
@@ -88,6 +90,16 @@ class PenerimaanResource extends Resource
                             ->label('Nama Peserta Didik')
                             ->disabled()
                             ->default(fn ($get) => $get('record.nama_peserta_didik')),
+
+                        TextInput::make('jurusan')
+                            ->label('Jurusan')
+                            ->disabled()
+                            ->default(fn ($get) => $get('record.jurusan')),
+
+                        TextInput::make('jenis_kelamin')
+                            ->label('Jenis Kelamin')
+                            ->disabled()
+                            ->default(fn ($get) => $get('record.jenis_kelamin')),
 
                         TextInput::make('nama_ayah')
                             ->label('Nama Ayah')
@@ -181,7 +193,7 @@ class PenerimaanResource extends Resource
                             ->default(fn ($get) => $get('record.is_validated'))
                             ->required(),
                     ]),
-            ]),
+            ])->columnSpanFull(),
         ]);
     }
 
@@ -192,6 +204,7 @@ class PenerimaanResource extends Resource
                 TextColumn::make('pendaftaran.nomor_form')->label('Nomor Form')->sortable(),
                 TextColumn::make('nomor_penerimaan')->label('Nomor Penerimaan')->sortable(),
                 TextColumn::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik')->toggleable(isToggledHiddenByDefault: true)->sortable(),
+                TextColumn::make('pendaftaran.jurusan')->label('Jurusan')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('pendaftaran.asal_sekolah')->label('Asal Sekolah')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('dokumen')->label('Dokumen')->sortable(),
                 TextColumn::make('pembayaran')->label('Pembayaran')->sortable(),
@@ -237,6 +250,7 @@ class PenerimaanResource extends Resource
                     //     })
                         // ->icon('heroicon-o-download')
             ])
+            ->searchable()
             ->headerActions([
                 Action::make('export')
                 ->label('Export ke Excel')
@@ -249,6 +263,8 @@ class PenerimaanResource extends Resource
                             return [
                                 'Nomor Form' => $item->pendaftaran->nomor_form ?? '-',
                                 'Nama Peserta Didik' => $item->pendaftaran->nama_peserta_didik ?? '-',
+                                'Jurusan' => $item->pendaftaran->jurusan ?? '-',
+                                'Jenis Kelamin' => $item->pendaftaran->jenis_kelamin ?? '-',
                                 'Nama Ayah' => $item->pendaftaran->nama_ayah ?? '-',
                                 'Nama Ibu' => $item->pendaftaran->nama_ibu ?? '-',
                                 'Nomor Telepon Peserta' => $item->pendaftaran->nomor_telp_peserta ?? '-',
@@ -279,6 +295,8 @@ class PenerimaanResource extends Resource
                         return [
                             'Nomor Form' => $item->pendaftaran->nomor_form ?? '-',
                             'Nama Peserta Didik' => $item->pendaftaran->nama_peserta_didik ?? '-',
+                            'Jurusan' => $item->pendaftaran->jurusan ?? '-',
+                            'Jenis Kelamin' => $item->pendaftaran->jenis_kelamin ?? '-',
                             'Nama Ayah' => $item->pendaftaran->nama_ayah ?? '-',
                             'Nama Ibu' => $item->pendaftaran->nama_ibu ?? '-',
                             'Nomor Telepon Peserta' => $item->pendaftaran->nomor_telp_peserta ?? '-',
@@ -332,6 +350,8 @@ class PenerimaanResource extends Resource
                 Tabs\Tab::make('Pendaftaran')
                     ->schema([
                         TextEntry::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik'),
+                        TextEntry::make('pendaftaran.jurusan')->label('Nama Calon Peserta Didik'),
+                        TextEntry::make('pendaftaran.jenis_kelamin')->label('Nama Calon Peserta Didik'),
                         TextEntry::make('pendaftaran.nama_ayah')->label('Nama Ayah'),
                         TextEntry::make('pendaftaran.nama_ibu')->label('Nama Ibu'),
                         TextEntry::make('pendaftaran.nomor_telp_peserta')->label('No.Telp Calon Peserta Didik'),

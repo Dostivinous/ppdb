@@ -20,6 +20,9 @@ use Filament\Tables\Columns\BooleanColumn;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Tabs;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Radio;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -32,8 +35,8 @@ class PendaftaranResource extends Resource
     protected static ?string $navigationGroup = 'Form PPDB';
 
     protected static ?string $pluralLabel = 'Pendaftaran';
-
     protected static ?string $recordTitleAttribute = 'nama_peserta_didik';
+
 
     public static function getNavigationBadge(): ?String
     {
@@ -55,6 +58,28 @@ class PendaftaranResource extends Resource
                         ->schema([
                             TextInput::make('nama_peserta_didik')
                             ->required()->label('Nama Calon Peserta Didik')->placeholder('Nama Calon Peserta Didik')->maxLength(40),
+
+                            Select::make('jurusan')
+                            ->required()->label('Pilih Jurusan')
+                            ->options([
+                                'PPLG' => "Pengembangan Perangkat Lunak dan Gim",
+                                'TJKT' => "Teknik Jaringan Komputer dan Telekomunikasi ",
+                                'DKV' => "Desain Komunikasi Visual",
+                                'BCP' => "Broadcasting dan Perfilman",
+                            ])
+                            ->validationAttribute('jurusan')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($errors = session('errors')) {
+                                    $component->setError($errors->get('jurusan'));
+                                }
+                            }),
+
+                            Radio::make('jenis_kelamin')
+                            ->required()->label('Jenis Kelamin')
+                            ->options([
+                                'Laki - Laki' => 'Laki - Laki',
+                                'Perempuan' => 'Perempuan',
+                            ]),
 
                             TextInput::make('nomor_telp_peserta')
                             ->required()->label('No.Telp Peserta')->placeholder('No.Telp Peserta')->numeric()->prefix('+62')->minValue(10),
@@ -86,7 +111,7 @@ class PendaftaranResource extends Resource
                             DatePicker::make('tanggal_pendaftaran')
                             ->required()->label('Tanggal Pendaftaran')->placeholder('Tanggal Pendaftaran')->default(now())->maxDate(now()),
                         ]),
-                ])
+                ])->columnSpanFull()
 
             ]);
     }
@@ -97,9 +122,11 @@ class PendaftaranResource extends Resource
             ->columns([
                 TextColumn::make('nomor_form')->label('Nomor Form')->sortable(),
                 TextColumn::make('nama_peserta_didik')->label('Nama Peserta Didik'),
-                TextColumn::make('nomor_telp_peserta')->label('No.Telp Peserta'),
+                TextColumn::make('jurusan')->label('Jurusan'),
+                TextColumn::make('jenis_kelamin')->label('Jenis Kelamin'),
+                TextColumn::make('nomor_telp_peserta')->label('No.Telp Peserta')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('asal_sekolah')->label('Asal Sekolah'),
-                TextColumn::make('alamat_rumah')->label('Alamat Rumah')->wrap(),
+                TextColumn::make('alamat_rumah')->label('Alamat Rumah')->wrap()->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
                 BooleanColumn::make('is_validated')->label('Status Validasi')
                 ->boolean(),
@@ -143,45 +170,38 @@ class PendaftaranResource extends Resource
         ];
     }
 
-    // public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
-    // {
-    //     $query = parent::getEloquentQuery()->where('is_validated', false);
-    //     \Log::info($query->toSql(), $query->getBindings()); // Log untuk memeriksa query
-    //     return $query;
-    // }
-
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->where('is_validated', false);
     }
 
     public static function infolist(Infolist $infolist): Infolist
-{
-    return $infolist
-        ->schema([
-            Tabs::make('Tabs')
-        ->tabs([
-            Tabs\Tab::make('Data Siswa')
-                ->schema([
-                    TextEntry::make('nama_peserta_didik')->label('Nama Peserta Didik'),
-                    TextEntry::make('nomor_telp_peserta')->label('No.Telp Peserta'),
-                    TextEntry::make('asal_sekolah')->label('Asal Sekolah'),
-                    TextEntry::make('alamat_rumah')->label('Alamat Rumah'),
-                ]),
-            Tabs\Tab::make('Data Orang Tua')
-                ->schema([
-                    TextEntry::make('nama_ayah')->label('Nama Ayah'),
-                    TextEntry::make('nama_ibu')->label('Nama Ibu'),
-                    TextEntry::make('nomor_telp_ayah')->label('No.Telp Ayah'),
-                    TextEntry::make('nomor_telp_ibu')->label('No. Telp Ibu'),
-                ]),
-            Tabs\Tab::make('Form')
-                ->schema([
-                    TextEntry::make('nomor_form')->label('Nomor Form'),
-                    TextEntry::make('tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
-                ]),
-            ])
-        ]);
-}
+    {
+        return $infolist
+            ->schema([
+                Tabs::make('Tabs')
+            ->tabs([
+                Tabs\Tab::make('Data Siswa')
+                    ->schema([
+                        TextEntry::make('nama_peserta_didik')->label('Nama Peserta Didik'),
+                        TextEntry::make('nomor_telp_peserta')->label('No.Telp Peserta'),
+                        TextEntry::make('asal_sekolah')->label('Asal Sekolah'),
+                        TextEntry::make('alamat_rumah')->label('Alamat Rumah'),
+                    ]),
+                Tabs\Tab::make('Data Orang Tua')
+                    ->schema([
+                        TextEntry::make('nama_ayah')->label('Nama Ayah'),
+                        TextEntry::make('nama_ibu')->label('Nama Ibu'),
+                        TextEntry::make('nomor_telp_ayah')->label('No.Telp Ayah'),
+                        TextEntry::make('nomor_telp_ibu')->label('No. Telp Ibu'),
+                    ]),
+                Tabs\Tab::make('Form')
+                    ->schema([
+                        TextEntry::make('nomor_form')->label('Nomor Form'),
+                        TextEntry::make('tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
+                    ]),
+                ])
+            ]);
+    }
 
 }

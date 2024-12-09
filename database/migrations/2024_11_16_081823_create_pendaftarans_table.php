@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nomor_form');
             $table->string('nama_peserta_didik');
+            $table->enum('jurusan', ['PPLG', 'TJKT', 'DKV', 'BCP']);
+            $table->enum('jenis_kelamin', ['Laki - Laki', 'Perempuan']);
             $table->string('nama_ayah');
             $table->string('nama_ibu');
             $table->string('nomor_telp_peserta');
