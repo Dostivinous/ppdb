@@ -28,6 +28,7 @@ use App\Filament\Widgets\AdvancedStatsOverviewWidget as WidgetsAdvancedStatsOver
 use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget as BaseWidget;
 use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget\Stat;
 use Filament\Navigation\NavigationItem;
+use App\Filament\Widgets\PendaftaranChart;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -40,7 +41,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(Login::class)
             ->colors([
-                'primary' => Color::Teal,
+                'danger' => '#1A1A19',
+                'success' => '#859F3D',
+                'info' => '#F6FCDF',
+                'primary' => '#31511E',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -62,6 +66,7 @@ class AdminPanelProvider extends PanelProvider
                 OverlookWidget::class,
                 WidgetsAdvancedStatsOverviewWidget::class,
                 PendaftaranList::class,
+                PendaftaranChart::class,
             ])
             ->middleware(middleware:[
                 EncryptCookies::class,
@@ -73,6 +78,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                // \Hasnayeen\Themes\Http\Middleware\SetTheme::class
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -87,6 +93,9 @@ class AdminPanelProvider extends PanelProvider
                     ->abbreviateCount(false)
                     ->alphabetical()
                 ])
+            //     ->plugin(
+            //     \Hasnayeen\Themes\ThemesPlugin::make()
+            // )
             ->favicon(asset('images/metik.png'))
             ->databaseNotifications();
     }

@@ -33,7 +33,28 @@ class AdvancedStatsOverviewWidget extends BaseWidget
         $maxValue = 100;
         $progressValidasi = min(($Validasi / $maxValue) * 10, 10);
 
+         $data = Pendaftaran::selectRaw('DATE(tanggal_pendaftaran) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->date => $item->count];
+            });
+
+        $labels = $data->keys()->toArray();
+        $values = $data->values()->toArray();
+
         return [
+            // Stat::make($labels)->'datasets' => [
+            //     [
+            //         'label' => 'Jumlah Pendaftaran',
+            //         'data' => $values,
+            //         'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
+            //         'borderColor' => 'rgba(54, 162, 235, 1)',
+            //         'borderWidth' => 1,
+            //     ],
+            // ],
+
             Stat::make('Banyaknya Data Pendaftaran', $totalPendaftaran)
                 ->icon('heroicon-o-user')
                 ->progress(Pendaftaran::count())// Misalnya progress statis, bisa disesuaikan

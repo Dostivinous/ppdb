@@ -92,7 +92,7 @@ class PendaftaranResource extends Resource
                 TextColumn::make('alamat_rumah')->label('Alamat Rumah')->wrap(),
                 TextColumn::make('tanggal_pendaftaran')->label('Tanggal Pendaftaran'),
                 BooleanColumn::make('is_validated')->label('Status Validasi')
-                ->boolean()->alignCenter(),
+                ->boolean(),
             ])
             ->defaultSort('nomor_form', 'asc')
             ->filters([

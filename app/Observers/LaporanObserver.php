@@ -26,10 +26,10 @@ class LaporanObserver
      * Handle the Penerimaan "deleted" event.
      */
     public function deleted(Penerimaan $penerimaan): void
-    {
         //
     }
 
+    {
     /**
      * Handle the Penerimaan "restored" event.
      */
