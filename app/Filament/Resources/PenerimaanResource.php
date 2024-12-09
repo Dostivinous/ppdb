@@ -17,18 +17,18 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\Action;
 use Filament\Infolists\Infolist;    
 use Filament\Infolists\Components\Tabs;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Actions\ExportBulkAction;
+use Illuminate\Support\Collection;
+use Rap2hpoutre\FastExcel\FastExcel;
+use Filament\Tables\Actions\BulkAction;
+
 
 class PenerimaanResource extends Resource
 {
@@ -190,7 +190,6 @@ class PenerimaanResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('pendaftaran.nomor_form')->label('Nomor Form')->sortable(),
-<<<<<<< HEAD
                 TextColumn::make('nomor_penerimaan')->label('Nomor Penerimaan')->sortable(),
                 TextColumn::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('pendaftaran.asal_sekolah')->label('Asal Sekolah')->toggleable(isToggledHiddenByDefault: true)->sortable(),
@@ -198,14 +197,6 @@ class PenerimaanResource extends Resource
                 TextColumn::make('pembayaran')->label('Pembayaran')->sortable(),
                 TextColumn::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 BooleanColumn::make('is_validated')->label('Tervalidasi')->sortable(),
-=======
-                TextColumn::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik')->toggleable(),
-                TextColumn::make('nomor_penerimaan')->label('Nomor Penerimaan'),
-                TextColumn::make('dokumen')->label('Dokumen'),
-                TextColumn::make('pembayaran')->label('Pembayaran'),
-                TextColumn::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran')->Toggleable(),
-                BooleanColumn::make('is_validated')->label('Tervalidasi'),
->>>>>>> ef1cd4c4bac4d42c7fc20fc7b84cb3a7ce2a49d4
             ])
             ->filters([
                 Filter::make('Belum Divalidasi')
@@ -219,15 +210,94 @@ class PenerimaanResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                //     Action::make('export')
-                //         ->label('Export to Excel')
-                //         ->action(function () {
-                //             Excel::download(new Penerimaan, 'data.xlsx');
-                // }),
+                    // Action::make('Export')
+                    //     ->label('Export ke Excel')
+                    //     ->action(function () {
+                    //         $data = Penerimaan::with('pendaftaran')
+                    //             ->get()
+                    //             ->map(function ($item) {
+                    //                 return [
+                    //                     'Nomor Form' => $item->pendaftaran->nomor_form ?? '-',
+                    //                     'Nama Peserta Didik' => $item->pendaftaran->nama_peserta_didik ?? '-',
+                    //                     'Nama Ayah' => $item->pendaftaran->nama_ayah ?? '-',
+                    //                     'Nama Ibu' => $item->pendaftaran->nama_ibu ?? '-',
+                    //                     'Nomor Telepon Peserta' => $item->pendaftaran->nomor_telp_peserta ?? '-',
+                    //                     'Nomor Telepon Ayah' => $item->pendaftaran->nomor_telp_ayah ?? '-',
+                    //                     'Nomor Telepon Ibu' => $item->pendaftaran->nomor_telp_ibu ?? '-',
+                    //                     'Asal Sekolah' => $item->pendaftaran->asal_sekolah ?? '-',
+                    //                     'Alamat Rumah' => $item->pendaftaran->alamat_rumah ?? '-',
+                    //                     'Tanggal Pendaftaran' => $item->pendaftaran->tanggal_pendaftaran ?? '-',
+                    //                     'Dokumen' => $item->dokumen,
+                    //                     'Pembayaran' => $item->pembayaran,
+                    //                     'Validasi' => $item->is_validated ? 'Ya' : 'Tidak',
+                    //                 ];
+                    //             });
+
+                    //         return (new FastExcel($data))->download('penerimaan.xlsx');
+                    //     })
+                        // ->icon('heroicon-o-download')
+            ])
+            ->headerActions([
+                Action::make('export')
+                ->label('Export ke Excel')
+                // ->icon('heroicon-o-download')
+                ->action(function () {
+                    // Ambil semua data yang ingin diekspor
+                    $data = Penerimaan::with('pendaftaran')
+                        ->get()
+                        ->map(function ($item) {
+                            return [
+                                'Nomor Form' => $item->pendaftaran->nomor_form ?? '-',
+                                'Nama Peserta Didik' => $item->pendaftaran->nama_peserta_didik ?? '-',
+                                'Nama Ayah' => $item->pendaftaran->nama_ayah ?? '-',
+                                'Nama Ibu' => $item->pendaftaran->nama_ibu ?? '-',
+                                'Nomor Telepon Peserta' => $item->pendaftaran->nomor_telp_peserta ?? '-',
+                                'Nomor Telepon Ayah' => $item->pendaftaran->nomor_telp_ayah ?? '-',
+                                'Nomor Telepon Ibu' => $item->pendaftaran->nomor_telp_ibu ?? '-',
+                                'Asal Sekolah' => $item->pendaftaran->asal_sekolah ?? '-',
+                                'Alamat Rumah' => $item->pendaftaran->alamat_rumah ?? '-',
+                                'Tanggal Pendaftaran' => $item->pendaftaran->tanggal_pendaftaran ?? '-',
+                                'Dokumen' => $item->dokumen,
+                                'Pembayaran' => $item->pembayaran,
+                                'Validasi' => $item->is_validated ? 'Ya' : 'Tidak',
+                            ];
+                        });
+
+                    // Unduh file Excel
+                    return (new FastExcel($data))->download('penerimaan.xlsx');
+                })
+                ->requiresConfirmation() // Opsional: Tambahkan konfirmasi sebelum aksi
+                ->color('primary') // Warna tombol
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
-            ]);
+                BulkAction::make('export')
+                ->label('Export ke Excel')
+                ->action(function (Collection $records) {
+                    // Ambil data dari record yang dipilih
+                    $data = $records->map(function ($item) {
+                        return [
+                            'Nomor Form' => $item->pendaftaran->nomor_form ?? '-',
+                            'Nama Peserta Didik' => $item->pendaftaran->nama_peserta_didik ?? '-',
+                            'Nama Ayah' => $item->pendaftaran->nama_ayah ?? '-',
+                            'Nama Ibu' => $item->pendaftaran->nama_ibu ?? '-',
+                            'Nomor Telepon Peserta' => $item->pendaftaran->nomor_telp_peserta ?? '-',
+                            'Nomor Telepon Ayah' => $item->pendaftaran->nomor_telp_ayah ?? '-',
+                            'Nomor Telepon Ibu' => $item->pendaftaran->nomor_telp_ibu ?? '-',
+                            'Asal Sekolah' => $item->pendaftaran->asal_sekolah ?? '-',
+                            'Alamat Rumah' => $item->pendaftaran->alamat_rumah ?? '-',
+                            'Tanggal Pendaftaran' => $item->pendaftaran->tanggal_pendaftaran ?? '-',
+                            'Dokumen' => $item->dokumen,
+                            'Pembayaran' => $item->pembayaran,
+                            'Validasi' => $item->is_validated ? 'Ya' : 'Tidak',
+                        ];
+                    });
+
+                    // Unduh file Excel
+                    return (new FastExcel($data))->download('penerimaan.xlsx');
+                })
+                ->requiresConfirmation() 
+        ]);
     }
 
     public static function getRelations(): array

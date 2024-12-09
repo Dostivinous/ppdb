@@ -37,7 +37,13 @@ class PendaftaranResource extends Resource
 
     public static function getNavigationBadge(): ?String
     {
-        return Pendaftaran::count();
+        $query = Pendaftaran::query();
+
+        if ($activeFilter = request()->query('active', null)) {
+            $query->where('is_active', $activeFilter);
+        }
+
+        return $query->count();
     }
 
     public static function form(Form $form): Form
