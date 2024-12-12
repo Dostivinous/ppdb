@@ -21,9 +21,11 @@ class ListPenerimaans extends ListRecords
     public function getTabs(): array
     {
         return [
-            null => Tab::make('All'),
-            'Lunas' => Tab::make()->query(fn ($query) => $query->where('pembayaran', 'Lunas')),
-            'Cicil' => Tab::make()->query(fn ($query) => $query->where('pembayaran', 'Cicil')),
+            'All' => Tab::make('All')->query(fn ($query) => $query),
+            'PPLG' => Tab::make('PPLG')->query(fn ($query) => $query->whereHas('pendaftaran', fn ($q) => $q->where('jurusan', 'PPLG'))),
+            'TJKT' => Tab::make('TJKT')->query(fn ($query) => $query->whereHas('pendaftaran', fn ($q) => $q->where('jurusan', 'TJKT'))),
+            'DKV' => Tab::make('DKV')->query(fn ($query) => $query->whereHas('pendaftaran', fn ($q) => $q->where('jurusan', 'DKV'))),
+            'BCP' => Tab::make('BCP')->query(fn ($query) => $query->whereHas('pendaftaran', fn ($q) => $q->where('jurusan', 'BCP'))),
         ];
     }
 }

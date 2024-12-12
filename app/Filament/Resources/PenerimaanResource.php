@@ -204,8 +204,15 @@ class PenerimaanResource extends Resource
                 TextColumn::make('pendaftaran.nomor_form')->label('Nomor Form')->sortable(),
                 TextColumn::make('nomor_penerimaan')->label('Nomor Penerimaan')->sortable(),
                 TextColumn::make('pendaftaran.nama_peserta_didik')->label('Nama Calon Peserta Didik')->toggleable(isToggledHiddenByDefault: true)->sortable(),
-                TextColumn::make('pendaftaran.jurusan')->label('Jurusan')->toggleable(isToggledHiddenByDefault: true)->sortable(),
-                TextColumn::make('pendaftaran.asal_sekolah')->label('Asal Sekolah')->toggleable(isToggledHiddenByDefault: true)->sortable(),
+                TextColumn::make('pendaftaran.jurusan')->label('Jurusan')
+                ->sortable()
+                ->badge(fn ($state): string => match ($state) {
+                    'PPLG' => 'success',
+                    'TJKT' => 'primary',
+                    'DKV' => 'warning',
+                    'BCP' => 'danger',
+                }),
+                TextColumn::make(name: 'pendaftaran.asal_sekolah')->label('Asal Sekolah')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('dokumen')->label('Dokumen')->sortable(),
                 TextColumn::make('pembayaran')->label('Pembayaran')->sortable(),
                 TextColumn::make('pendaftaran.tanggal_pendaftaran')->label('Tanggal Pendaftaran')->toggleable(isToggledHiddenByDefault: true)->sortable(),
@@ -279,11 +286,10 @@ class PenerimaanResource extends Resource
                             ];
                         });
 
-                    // Unduh file Excel
                     return (new FastExcel($data))->download('penerimaan.xlsx');
                 })
-                ->requiresConfirmation() // Opsional: Tambahkan konfirmasi sebelum aksi
-                ->color('primary') // Warna tombol
+                ->requiresConfirmation()
+                ->color('primary') 
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

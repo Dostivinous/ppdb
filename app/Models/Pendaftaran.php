@@ -42,9 +42,8 @@ class Pendaftaran extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            // Mengambil nomor terakhir
-            $lastNumber = static::max('id') + 1; // Menambahkan 1 untuk auto increment
-            $model->nomor_form = 'PPDB202400' . $lastNumber;
+            $lastNumber = static::max('id') + 1;
+            $model->nomor_form = 'PPDB00' . $lastNumber;
         });
     }
 

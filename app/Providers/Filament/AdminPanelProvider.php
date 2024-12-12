@@ -29,6 +29,7 @@ use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget as BaseWidget;
 use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget\Stat;
 use Filament\Navigation\NavigationItem;
 use App\Filament\Widgets\PendaftaranChart;
+use App\Filament\Widgets\PenerimaanChart;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -66,8 +67,10 @@ class AdminPanelProvider extends PanelProvider
                 // Widgets\FilamentInfoWidget::class,
                 OverlookWidget::class,
                 WidgetsAdvancedStatsOverviewWidget::class,
-                PendaftaranList::class,
+                // PendaftaranList::class,
                 PendaftaranChart::class,
+                PenerimaanChart::class,
+
             ])
             ->middleware(middleware:[
                 EncryptCookies::class,
@@ -89,7 +92,7 @@ class AdminPanelProvider extends PanelProvider
                 OverlookPlugin::make()
                     ->sort(2)
                     ->columns([
-                        'lg' => 4,
+                        'md' => 3,
                     ])
                     ->abbreviateCount(false)
                     ->alphabetical()
@@ -102,6 +105,9 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Form PPDB',
                 'Manajemen Data',
+            ])
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ]);
     }
 }

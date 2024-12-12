@@ -7,11 +7,13 @@
     "require": {
         "php": "^8.2",
         "awcodes/overlook": "^2.2",
+        "bezhansalleh/filament-shield": "^3.3",
         "eightynine/filament-advanced-widgets": "^3.0",
         "filament/filament": "^3.2",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
-        "rap2hpoutre/fast-excel": "^5.5"
+        "rap2hpoutre/fast-excel": "^5.5",
+        "spatie/laravel-permission": "^6.10"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
